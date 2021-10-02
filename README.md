@@ -21,6 +21,12 @@ Will take a few minutes to complete
 
     docker-compose -f ./builds/coopilot/docker-compose.yml build
 
+##Configure:
+Coopilot needs a certificate and key placed in the `./builds/coopilot/conf/cert` directory
+
+    ./builds/coopilot/conf/cert/cert.pem
+    ./builds/coopilot/conf/cert/key.pem
+
 ### Run:
 Start up the Coopilot containers in the background  
 
@@ -35,18 +41,17 @@ Stop the Coopilot containers
 
 ## Accessing Coopilot  
 
-Once the containers are up and running you can access your Coopilot instance through [https://localhost/](https://localhost/)
+Once the containers are up and running you can access your Coopilot instance by connecting through https at the host address. If set up on localhost then: [https://localhost/](https://localhost/)
 
-To access the built/minified interface you have to request [https://localhost/release/](https://localhost/release/)  
-
-📝 _The release build will be improved in the future and this won't be the case._
+To access the built/minified interface you can request the release directory. Localhost example [https://localhost/release/](https://localhost/release/)  This will load quicker, especially on slow devices.
 
 
 
-## Modifying Coopilot
-### SSL certificates
-You can place your own ssl certificates in the `builds/coopilot/conf/cert` directory and restart your containers to use them.
-### General Configuration
-Modify [`builds/coopilot/conf/config.json`](builds/coopilot/conf/config.json) and restart containers.  
-See the [`src/balek-server/etc/README.md`](src/balek-server/etc/README.md) for more info.
+## Certificates
+### Webserver
+You can place your own ssl certificates in the `builds/coopilot/conf/cert` directory and restart your containers to use them when connecting to the Interface.
+### iOS 
+To allow communication to iOS devices, self signed certificates and certificate authorities must be enabled on each device to be used. To get this working in a development environment, I followed [this guide](https://jaanus.com/ios-13-certificates/)
+
+
 
