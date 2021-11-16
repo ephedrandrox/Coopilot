@@ -79,6 +79,10 @@ define(['dojo/_base/declare',
                     this._mainContentDiv.scrollTop = this._mainContentDiv.scrollHeight;
                 }
             },
+            removeAllEntries: function(){
+                this._listDiv.innerHTML = ""
+                this._listItems = {}
+            },
             _onCopyClicked: function (eventObject) {
             let saleTagScanData =  this._saleTagScanData;
                 let tabbedString = "" ;
@@ -92,6 +96,37 @@ define(['dojo/_base/declare',
                      this.copyToClipboard(tabbedString);
 
 
+
+            },
+            createTabbedDataDownload: function (tabbedData){
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(tabbedData));
+                element.setAttribute('download', "Coopilot Data.txt");
+
+                element.style.display = 'none';
+                document.body.appendChild(element);
+
+                element.click();
+
+                document.body.removeChild(element);
+            },
+            _onSaveClicked: function (eventObject) {
+                let saleTagScanData =  this._saleTagScanData;
+
+                let tabbedString = "" ;
+                saleTagScanData.forEach(lang.hitch(this, function (entry) {
+                    tabbedString += entry.note.replace(/(?:\r\n|\r|\n)/g, "\t") + "\n";
+                }));
+
+
+                console.log('tabbed content: ', tabbedString);
+
+
+                this.createTabbedDataDownload(tabbedString);
+
+            },
+            _onRemoveClicked: function (eventObject) {
+                this._interface.removeEntries();
 
             },
             copyToClipboard: function (textToCopy){

@@ -15,7 +15,11 @@ define(['dojo/_base/declare',
 
             },
             receiveMessage: function (moduleMessage, wssConnection) {
+                console.log("Message", moduleMessage.messageData)
+                console.log("Message", moduleMessage.messageData)
+
                 if (moduleMessage.instanceKey == this._instanceKey) {
+                    console.log("Message", moduleMessage.messageData)
                     if (moduleMessage.messageData.request) {
                         switch (moduleMessage.messageData.request) {
                             case "Digivigil SaleTagScan Entry":
@@ -27,6 +31,9 @@ define(['dojo/_base/declare',
                                 break;
                             case "SaleTagScan Entries":
                                 this.sendSaleTagScanEntries(wssConnection);
+                                break;
+                            case "Remove Entries":
+                                this._module.removeEntries();
                                 break;
                             default:
                                 console.log("Not a valid request", moduleMessage);

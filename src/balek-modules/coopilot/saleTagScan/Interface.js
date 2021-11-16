@@ -50,12 +50,29 @@ define(['dojo/_base/declare',
                     }
                 });
             },
+            removeEntries() {
+                console.log("requesting remove entries");
+                topic.publish("sendBalekProtocolMessage", {
+                    moduleMessage: {
+                        instanceKey: this._instanceKey, messageData: {
+                            request: "Remove Entries",
+                            searchParams: null
+                        }
+                    }
+                });
+            },
             receiveMessage: function (moduleMessage) {
 
                 if (moduleMessage.instanceKey == this._instanceKey) {
                     if (moduleMessage.messageData.saleTagScanData) {
                         console.log(moduleMessage.messageData.saleTagScanData);
                         this._mainInterface.updateSaleTagScanData(moduleMessage.messageData.saleTagScanData);
+                    } else if (moduleMessage.messageData.removeEntries) {
+                        console.log(moduleMessage.messageData.removeEntries);
+                        if(moduleMessage.messageData.removeEntries == "all")
+                        {
+                            this._mainInterface.removeAllEntries();
+                        }
                     } else {
                         console.log("unknown message COntent")
                     }
