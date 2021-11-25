@@ -1,17 +1,32 @@
 define(['dojo/_base/declare',
         'dojo/_base/lang',
         'dojo/topic',
-        'balek-modules/Instance'],
-    function (declare, lang, topic, baseInstance) {
 
-        return declare("moduleDigivigilWWWSaleTagScanInstance", baseInstance, {
+        'balek-modules/coopilot/saleTagScan/Instance/main',
+
+        'balek-modules/components/syncedCommander/Instance'
+    ],
+    function (declare, lang, topic, MainInstance, _SyncedCommanderInstance) {
+
+        return declare("moduleDigivigilWWWSaleTagScanInstance", _SyncedCommanderInstance, {
             _instanceKey: null,
 
+
+            mainInstance: null,
             constructor: function (args) {
 
                 declare.safeMixin(this, args);
 
                 console.log("moduleDigivigilWWWSaleTagScanInstance starting...");
+
+               this.mainInstance = new MainInstance({_instanceKey: this._instanceKey, _sessionKey: this._sessionKey, _userKey: this._userKey});
+
+                this._interfaceState.set("mainInstanceKeys", {instanceKey: this.mainInstance._instanceKey,
+                    sessionKey: this.mainInstance._sessionKey,
+                    userKey: this.mainInstance._userKey,
+                    componentKey: this.mainInstance._componentKey});
+
+                this.setInterfaceCommands();
 
             },
             receiveMessage: function (moduleMessage, wssConnection) {
@@ -36,6 +51,8 @@ define(['dojo/_base/declare',
                                 this._module.removeEntries();
                                 break;
                             default:
+                                this.inherited(arguments);
+
                                 console.log("Not a valid request", moduleMessage);
                         }
                     }
@@ -51,6 +68,12 @@ define(['dojo/_base/declare',
                             messageData: {saleTagScanData: saleTagScanEntries}
                         }
                     });
+                }));
+            },
+            _end: function () {
+                return new Promise(lang.hitch(this, function(Resolve, Reject){
+                    console.log("destroying saleTagScan Module Interface ");
+                    Resolve({success: "Unloaded Instance"});
                 }));
             }
         });

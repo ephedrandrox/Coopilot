@@ -1,15 +1,19 @@
 define(['dojo/_base/declare',
         'dojo/_base/lang',
-        'balek-modules/Interface',
         'dojo/topic',
+
         "dojo/dom-construct",
         'dojo/dom-style',
         "dojo/_base/window",
-        'balek-modules/coopilot/saleTagScan/Interface/main'
-    ],
-    function (declare, lang, baseInterface, topic, domConstruct, domStyle, win, mainInterface) {
 
-        return declare("moduleDigivigilWWWSaleTagScanInterface", baseInterface, {
+        'balek-modules/coopilot/saleTagScan/Interface/main',
+        'balek-modules/components/syncedCommander/Interface'
+    ],
+    function (declare, lang, topic,
+              domConstruct, domStyle, win,
+              mainInterface, _SyncedCommanderInterface) {
+
+        return declare("moduleCoopilotSaleTagScanInterface", _SyncedCommanderInterface, {
             _instanceKey: null,
             _mainInterface: null,
 
@@ -17,10 +21,64 @@ define(['dojo/_base/declare',
 
                 declare.safeMixin(this, args);
 
-                this._mainInterface = new mainInterface({_instanceKey: this._instanceKey, _interface: this});
+                //this._mainInterface = new mainInterface({_instanceKey: this._instanceKey, _interface: this});
 
-                topic.publish("displayAsDialog", this._mainInterface);
+              //  topic.publish("addToMainContentLayer", this._mainInterface.domNode);
 
+/*
+                this._mainInterface.getContainerKeys().then(lang.hitch(this, function(containerKeys){
+                            console.log(containerKeys, typeof containerKeys );
+                    if(Array.isArray(containerKeys) && containerKeys.length === 0)
+                    {
+                        topic.publish("addToCurrentWorkspace",this._mainInterface );
+                    }else
+                    {
+                        console.log(containerKeys.length);
+                    }
+                })).catch(lang.hitch(this, function(error){
+                    console.log(error);
+                }));
+*/
+
+            },
+            onInterfaceStateChange: function (name, oldState, newState) {
+                //this has to be here so remoteCommander works
+                this.inherited(arguments);
+                console.log("Instance Status:",name, oldState, newState);
+
+                if (name === "Status" && newState === "Ready") {
+                    console.log("Instance Status:", newState);
+                    //we could do something based on error status here
+                } else if (name === "mainInstanceKeys") {
+                    console.log("mainInstanceKeys:", newState);
+
+                    if(this._mainInterface === null){
+                        this._mainInterface = new mainInterface({_instanceKey: newState.instanceKey,
+                            _sessionKey: newState.sessionKey,
+                            _componentKey: newState.componentKey,
+                        _interface: this});
+
+
+
+                        this._mainInterface.getContainerKeys().then(lang.hitch(this, function(containerKeys){
+                            //         console.log(containerKeys, typeof containerKeys );
+                            if(Array.isArray(containerKeys) && containerKeys.length === 0)
+                            {
+                                console.log("addToCurrentWorkspace ooooooooooooooooooooooooooooooooooooooooo");
+                                topic.publish("addToCurrentWorkspace",this._mainInterface );
+                            }else
+                            {
+                                //            console.log(containerKeys.length);
+                            }
+                        })).catch(lang.hitch(this, function(error){
+                            console.log(error);
+                        }));
+
+
+
+                    }
+
+                }
             },
             getWorkspaceDomNode: function () {
                 return this._mainInterface.domNode;

@@ -1,0 +1,22 @@
+<div class="${baseClass}" data-dojo-attach-event="onkeyup:_onKeyUp,onkeydown:_onKeyDown,onfocus:_onFocus" tabindex="0">
+ <div data-dojo-attach-point='_dropZone'
+      data-dojo-attach-event="drop:_onDropped,dragenter:_onDragEnter,dragleave:_onDragLeave"
+      class="${baseClass}DropZone">
+
+
+ </div>
+ <form class="my-form">
+  <input type="file" id="fileElem" accept="text/*"
+         data-dojo-attach-point='_textFile'
+         data-dojo-attach-event="onchange:_onFileChange"
+         style="display:none">
+
+  <label  class="${baseClass}FileLabel" for="fileElem">Select A file</label>
+ </form>
+ <div class="${baseClass}PreviewDiv" data-dojo-attach-point='_previewPane'>
+  <pre >
+
+  </pre>
+ </div>
+
+</div>

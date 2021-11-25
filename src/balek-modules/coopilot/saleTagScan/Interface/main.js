@@ -15,6 +15,13 @@ define(['dojo/_base/declare',
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
 
+        'balek-modules/components/syncedCommander/Interface',
+        'balek-client/session/workspace/container/containable',
+
+
+        'balek-modules/coopilot/tabImporter/Interface',
+
+
         "balek-modules/coopilot/saleTagScan/Interface/createEntry",
         "balek-modules/coopilot/saleTagScan/Interface/listItem",
 
@@ -22,13 +29,17 @@ define(['dojo/_base/declare',
         'dojo/text!balek-modules/coopilot/saleTagScan/resources/css/main.css'
     ],
     function (declare, lang, topic, domClass, domStyle, domConstruct, win, on, domAttr, dojoKeys,
-              dijitFocus, dojoReady, InlineEditBox, TextBox, _WidgetBase, _TemplatedMixin, createEntry, listItem, template,
+              dijitFocus, dojoReady, InlineEditBox, TextBox,
+              _WidgetBase, _TemplatedMixin,
+              _SyncedCommanderInterface,
+              _BalekWorkspaceContainerContainable,
+              TabImporter, createEntry, listItem, template,
               mainCss) {
-        return declare("moduleSessionLoginInterface", [_WidgetBase, _TemplatedMixin], {
+        return declare("moduleCoopiloTagScanInterface", [_WidgetBase, _TemplatedMixin, _SyncedCommanderInterface, _BalekWorkspaceContainerContainable], {
             _instanceKey: null,
             _interface: null,
             templateString: template,
-            baseClass: "digivigilWWWSaleTagScanMainInterface",
+            baseClass: "coopilotTagScanMainInterface",
 
             _mainCssString: mainCss,
 
@@ -48,9 +59,17 @@ define(['dojo/_base/declare',
                 declare.safeMixin(this, args);
 
                 domConstruct.place(domConstruct.toDom("<style>" + this._mainCssString + "</style>"), win.body());
+                this.setContainerName(" 📱 - Scans - ");
 
             },
-            postCreate: function () {
+
+            onInterfaceStateChange: function (name, oldState, newState) {
+                console.log("calling");
+                this.inherited(arguments);     //this has to be done so remoteCommander works
+            },
+
+                postCreate: function () {
+                    this.initializeContainable();
 
                 this._interface.requestSaleTagScanEntries();
 
@@ -129,7 +148,17 @@ define(['dojo/_base/declare',
                 this._interface.removeEntries();
 
             },
+            _onImportClicked: function(eventObject){
+                let tabImporter = new TabImporter({question: "Start File with...",
+                    importCompleteCallback: lang.hitch(this, function(importedData){
+                        console.log("Imported Data Success:", importedData);
+
+                        tabImporter.unload();
+                    }) });
+            },
             copyToClipboard: function (textToCopy){
+
+
 
 
             let node = domConstruct.create("div");
@@ -177,6 +206,9 @@ define(['dojo/_base/declare',
 
                     this._listItems[listItem].unload();
                 }
+
+                this.inherited(arguments);
+                this.destroy();
             }
         });
     });
