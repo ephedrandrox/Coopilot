@@ -16,8 +16,6 @@ builds/docker/mysql/mysqlDB/
 /src/balek-modules/lib/
 
 
-builds/diaplode/data/
-
 src/balek-server/etc/cert/
 
 data/

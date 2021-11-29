@@ -50,7 +50,7 @@ define(['dojo/_base/declare',
               workspaceMenu,
 
               //Balek Interface Includes
-              _SyncedCommanderInterface,
+              _SyncedCommanderInterface
              ) {
         return declare("moduleCoopilotMenuInterfaceMenuBar", [_WidgetBase, _TemplatedMixin, _SyncedCommanderInterface], {
             _instanceKey: null,

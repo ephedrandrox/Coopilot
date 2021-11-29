@@ -7,7 +7,7 @@ define(['dojo/_base/declare',
         "dojo/_base/window",
 
         'balek-modules/coopilot/saleTagScan/Interface/main',
-        'balek-modules/components/syncedCommander/Interface'
+        'balek-modules/components/syncedCommander/Interface',
     ],
     function (declare, lang, topic,
               domConstruct, domStyle, win,
@@ -20,25 +20,6 @@ define(['dojo/_base/declare',
             constructor: function (args) {
 
                 declare.safeMixin(this, args);
-
-                //this._mainInterface = new mainInterface({_instanceKey: this._instanceKey, _interface: this});
-
-              //  topic.publish("addToMainContentLayer", this._mainInterface.domNode);
-
-/*
-                this._mainInterface.getContainerKeys().then(lang.hitch(this, function(containerKeys){
-                            console.log(containerKeys, typeof containerKeys );
-                    if(Array.isArray(containerKeys) && containerKeys.length === 0)
-                    {
-                        topic.publish("addToCurrentWorkspace",this._mainInterface );
-                    }else
-                    {
-                        console.log(containerKeys.length);
-                    }
-                })).catch(lang.hitch(this, function(error){
-                    console.log(error);
-                }));
-*/
 
             },
             onInterfaceStateChange: function (name, oldState, newState) {
