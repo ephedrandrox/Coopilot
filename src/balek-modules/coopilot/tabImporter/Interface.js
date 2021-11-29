@@ -2,9 +2,11 @@ define(['dojo/_base/declare',
         'dojo/_base/lang',
         'dojo/topic',
         'dojo/on',
+        'dojo/query',
 
         "dojo/dom-construct",
         'dojo/dom-style',
+        "dojo/dom-class",
         "dojo/_base/window",
 
         "dojo/keys",
@@ -20,9 +22,11 @@ define(['dojo/_base/declare',
               lang,
               topic,
               on,
+              query,
 
               domConstruct,
               domStyle,
+              domClass,
               win,
 
               dojoKeys,
@@ -45,15 +49,23 @@ define(['dojo/_base/declare',
 
             importCompleteCallback: null,
 
-            _textFile: null,
+            _fileInfoPane: null,
             _previewPane: null,
+            _outputPane: null,
+            _outputPreviewPane: null,
             _dropZone: null,
 
-            values: null,
+           // values: null,
+
+            lines: null,
+            headerStart: 0,
+            footerStart: 0,
+
             mostValuesInLine: 0,
 
             constructor: function (args) {
                 this.values = Array()
+                this.lines = Array()
                 declare.safeMixin(this, args);
                 domConstruct.place(domConstruct.toDom("<style>" + this.templateCssString + "</style>"), win.body());
 
@@ -67,7 +79,7 @@ define(['dojo/_base/declare',
                     e.stopPropagation()});
             },
             _onFocus: function(){
-                this.userInputValue.focus();
+
             },
             _onKeyUp: function (keyUpEvent) {
                 switch (keyUpEvent.keyCode) {
@@ -81,7 +93,8 @@ define(['dojo/_base/declare',
                         break;
 
                 }
-            }, _onKeyDown: function (keyUpEvent) {
+            },
+            _onKeyDown: function (keyUpEvent) {
                 switch (keyUpEvent.keyCode) {
                     case dojoKeys.ENTER:
                         keyUpEvent.preventDefault();
@@ -95,24 +108,6 @@ define(['dojo/_base/declare',
 
                 }
             },
-            _onFileChange: function (eventObject) {
-                let file = eventObject.target.files[0];
-
-                    if (file.type.match('text.*')) {
-                        let reader = new FileReader();
-                        reader.onload = lang.hitch(this, function (onLoadEvent) {
-
-                            console.log(onLoadEvent.target.result)
-                            this._previewPane.innerHTML = "";
-                            this.parseTabSeperatedString( onLoadEvent.target.result)
-                        });
-                        // Read in the image file as a data URL.
-                        reader.readAsText(file);
-                    } else {
-                        alert("Not a Text File!");
-                    }
-
-            },
             _onDropped: function(dropEvent){
                 dropEvent.preventDefault()
                 dropEvent.stopPropagation()
@@ -120,7 +115,34 @@ define(['dojo/_base/declare',
                 let dataTransfer = dropEvent.dataTransfer
                 let files = dataTransfer.files
 
-                this._textFile.files = files
+                let file = files[0];
+
+                if (file.type.match('text.*')) {
+                    let reader = new FileReader();
+                    reader.onload = lang.hitch(this, function (onLoadEvent) {
+                   console.log(onLoadEvent.target.result)
+                        this._previewPane.innerHTML = "";
+
+                        this._fileInfoPane.innerHTML = ""
+                        this._fileInfoPane.innerHTML += "Importing: " + file.name;
+                        this._fileInfoPane.innerHTML += " size:" + file.size/1024;
+
+                        this._fileInfoPane.innerHTML += " lastModified:" + Date(file.lastModified);
+
+
+
+                        this.parseTabSeperatedString( onLoadEvent.target.result)
+                    });
+                    // Read in the image file as a data URL.
+                    reader.readAsText(file);
+                } else {
+                    alert("Not a Text File!");
+                }
+
+
+
+
+              //  this._textFile.files = files
                 console.log("Dropped",files)
             },
             _onDragEnter: function(dragEvent){
@@ -137,59 +159,154 @@ define(['dojo/_base/declare',
             parseTabSeperatedString: function(stringToParse)
             {
 
-                let lineIndex = 0;
-                let valueIndex = 0;
+                this.lines = []
                 let linesArray = stringToParse.split("\n");
-                this._previewPane.innerHTML += "\n Lines: "+ linesArray.length;
 
                 for (const line of linesArray)
                 {
-                    valueIndex = 0;
+
                     let valuesArray = line.split("\t");
+                    let valuesToSaveArray = [];
+
                     if (this.mostValuesInLine < valuesArray.length){
                         this.mostValuesInLine = valuesArray.length
+                        this.headerStart = this.lines.length
                     }
+
+                    if (this.mostValuesInLine > valuesArray.length){
+                       this.footerStart = this.lines.length
+                    }
+
                     for (const value of valuesArray) {
-                        let valuesOfIndex = this.getValuesOfIndex(valueIndex)
+                       let valueWithoutQuotes = value.replace(/^["'](.+(?=["']$))["']$/, '$1');
                         //regex removes quotes around value
-                        valuesOfIndex[lineIndex] = value.replace(/^["'](.+(?=["']$))["']$/, '$1');
-                        valueIndex++
+                        valuesToSaveArray.push(valueWithoutQuotes);
+
                     }
-                    lineIndex++;
+                    this.lines.push(valuesToSaveArray)
+
                 }
 
-                this._previewPane.innerHTML += "\n Most Values: "+ this.mostValuesInLine;
+                this._fileInfoPane.innerHTML += "\n Lines: "+ linesArray.length;
+                this._fileInfoPane.innerHTML += " Columns: "+ this.mostValuesInLine;
+                this._fileInfoPane.innerHTML += " Header: "+ this.headerStart;
+                this._fileInfoPane.innerHTML += " Footer: "+ this.footerStart;
 
                 this.refreshTable()
             },
             refreshTable: function(){
 
-                let commaString = ""
+
                 let linePosition = 0
 
-                commaString+= this.values[0].join()
-
-                this._previewPane.innerHTML += "\n , Values: "+ commaString;
 
                 let table = domConstruct.create("table");
+                let tableClassString = this.baseClass+"Table"
+                domClass.add(table, tableClassString)
 
-                for (const line of this.values[0])
+                for (const line of this.lines)
                 {
-                    let valuePosition = 0;
-                    let row = domConstruct.create("tr")
-                    let firstTableData = domConstruct.create("td")
-                    firstTableData.innerHTML = linePosition
-                    domConstruct.place(firstTableData, row)
-                    do{
-                        let tableData = domConstruct.create("td")
+                    if( linePosition >= this.headerStart && linePosition < this.footerStart)
+                    {
+                        let row = domConstruct.create("tr")
+                        let rowClassString = this.baseClass+"TableRow"
+                        let valuePosition = 0
+                        let firstTableData = domConstruct.create("td")
+                        let tableClassString = this.baseClass+"TableRowIdentityCell"
 
-                        let thisValue = this.values[valuePosition][linePosition]
 
-                        tableData.innerHTML = thisValue;
-                        domConstruct.place(tableData, row)
-                        valuePosition++;
-                    }while(valuePosition<this.mostValuesInLine)
-                    domConstruct.place(row, table)
+                        domClass.add(row, rowClassString)
+                        domClass.add(firstTableData, tableClassString)
+
+                        on(firstTableData, "mouseenter", function (mouseEvent){
+                            //query(String("." + tableClassString)).style("backgroundColor", "orange");
+                            let nodeList = query(String("." + tableClassString), this._previewPane);
+
+                            for ( const node of nodeList)
+                            {
+                                domStyle.set(node,"backgroundColor", "green" )
+
+                            }
+                        })
+
+                        on(firstTableData, "mouseleave", function (mouseEvent){
+                            //query(String("." + tableClassString)).style("backgroundColor", "orange");
+                            let nodeList = query(String("." + tableClassString), this._previewPane);
+                            console.log(nodeList)
+
+                            for ( const node of nodeList)
+                            {
+                                domStyle.set(node,"backgroundColor", "black" )
+
+                            }
+                        })
+
+
+                        firstTableData.innerHTML = "⬆️" + linePosition + "⬇️️"
+                        domConstruct.place(firstTableData, row)
+
+                        for( const value of line)
+                        {
+                            let tableData = domConstruct.create("td")
+
+                            let tableClassString = this.baseClass+"TableRowIdentityCell" + valuePosition.toString()
+
+                            domClass.add(tableData, tableClassString)
+
+                            on(tableData, "mouseenter", function (mouseEvent){
+                                //query(String("." + tableClassString)).style("backgroundColor", "orange");
+                                let nodeList = query(String("." + tableClassString), this._previewPane);
+
+                                for ( const node of nodeList)
+                                {
+                                    domStyle.set(node,"backgroundColor", "green" )
+                                    domStyle.set(node,"cursor", "pointer" )
+
+                                }
+                            })
+
+                            on(tableData, "mouseleave", function (mouseEvent){
+                                //query(String("." + tableClassString)).style("backgroundColor", "orange");
+                                let nodeList = query(String("." + tableClassString), this._previewPane);
+
+                                for ( const node of nodeList)
+                                {
+                                    domStyle.set(node,"backgroundColor", "unset" )
+                                    domStyle.set(node,"cursor", "unset" )
+
+                                }
+                            })
+
+                            let currentColumn = valuePosition.valueOf()
+                            on(tableData, "dblclick", lang.hitch(this, function (mouseEvent){
+
+                                //query(String("." + tableClassString)).style("backgroundColor", "orange");
+                                let nodeList = query(String("." + tableClassString), this._previewPane);
+
+                                let currentColumnValueArray = this.getColumnValueArray(currentColumn)
+
+                                console.log("Get currentColumnValueArray:", currentColumnValueArray);
+
+                                this._outputPreviewPane.innerHTML = currentColumnValueArray.join(",")
+                                for ( const node of nodeList)
+                                {
+                                    domStyle.set(node,"backgroundColor", "unset" )
+                                    domStyle.set(node,"cursor", "unset" )
+
+                                }
+                            }))
+
+
+
+
+                            tableData.innerHTML = value;
+                            domConstruct.place(tableData, row)
+                            valuePosition++
+                        }
+
+                        domConstruct.place(row, table)
+                    }
+
                     linePosition++
                 }
 
@@ -197,14 +314,19 @@ define(['dojo/_base/declare',
 
 
             },
-            getValuesOfIndex(number){
-                if(!(this.values[number] instanceof Array))
+            getColumnValueArray(columnIndex){
+                let returnIndex = []
+                let linePosition = 0
+                for( const line of this.lines)
                 {
-                    this.values[number] = []
-                }
-                return this.values[number]
-            },
+                    if( linePosition >= this.headerStart && linePosition < this.footerStart) {
 
+                        returnIndex.push(line[columnIndex])
+                    }
+                        linePosition++
+                }
+                return returnIndex
+            },
             getWorkspaceDomNode: function () {
                 return this.domNode;
             },
