@@ -30,11 +30,11 @@ define(['dojo/_base/declare',
 
             },
             receiveMessage: function (moduleMessage, wssConnection) {
-                console.log("Message", moduleMessage.messageData)
-                console.log("Message", moduleMessage.messageData)
+               // console.log("Message", moduleMessage.messageData)
+               // console.log("Message", moduleMessage.messageData)
 
                 if (moduleMessage.instanceKey == this._instanceKey) {
-                    console.log("Message", moduleMessage.messageData)
+                   // console.log("Message", moduleMessage.messageData)
                     if (moduleMessage.messageData.request) {
                         switch (moduleMessage.messageData.request) {
                             case "Digivigil SaleTagScan Entry":
@@ -53,7 +53,7 @@ define(['dojo/_base/declare',
                             default:
                                 this.inherited(arguments);
 
-                                console.log("Not a valid request", moduleMessage);
+                               // console.log("Not a valid request", moduleMessage);
                         }
                     }
                 } else {
