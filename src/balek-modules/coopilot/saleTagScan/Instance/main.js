@@ -12,14 +12,14 @@ define(['dojo/_base/declare',
               syncedStreamInstance,
               //Balek Instance Includes
               _SyncedCommanderInstance) {
-        return declare("moduleDiaplodeCommanderInstanceTerminal", [_SyncedCommanderInstance], {
+        return declare("moduleCoopilotScansInstance", [_SyncedCommanderInstance], {
 
             scanEntries: null,
 
 
             constructor: function (args) {
                 declare.safeMixin(this, args);
-                console.log("starting moduleDiaplodeCommanderInstanceTerminal");
+                console.log("starting moduleCoopilotScansInstance");
 
 
 

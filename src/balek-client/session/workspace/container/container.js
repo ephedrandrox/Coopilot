@@ -400,9 +400,9 @@ define(['dojo/_base/declare',
                 this.updateInstanceElementBox();
             },
             updateInstanceElementBox: function(){
+                //todo remove this, probably not used
                 let elementBox = domGeometry.getContentBox(this._workspaceContainerWidget.domNode);
-             //   console.log("resized sending Box", elementBox);
-                this._componentStateSet("diaplodeWorkspaceContainer", "elementBox", elementBox);
+               console.log("Does this happen? resized sending Box", elementBox);
             },
             toggleShowView: function()
             {

@@ -7,7 +7,7 @@ define([
         "dojo/dom-style",
         'dojo/dom-construct',
         'dojo/on',
-        //Diaplode Includes
+        //Balek Includes
         'balek-client/session/workspace/workspaceManagerInterfaceCommands',
     ],
     function (
@@ -18,7 +18,7 @@ define([
               domStyle,
               domConstruct,
               on,
-              //Diaplode Includes
+              //Balek Includes
               balekWorkspaceManagerInterfaceCommands ) {
 
         return declare( "coopilotMenuInterfaceWorkspacesMenu",null, {
