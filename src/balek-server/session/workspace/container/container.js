@@ -53,7 +53,7 @@ define(['dojo/_base/declare',
             connectWorkspaceInterface(interfaceCallback){
 
                 this._interfaceConnectionCallback = interfaceCallback;
-                console.log("Mousedown", {stateUpdate:{containerState: JSON.stringify(this._containerState)}});
+             //   console.log("Mousedown", {stateUpdate:{containerState: JSON.stringify(this._containerState)}});
 
 
                 interfaceCallback({stateUpdate:{containerState: JSON.stringify(this._containerState)}});
@@ -63,7 +63,7 @@ define(['dojo/_base/declare',
             },
             connectWorkspaceContainerInterface(interfaceCallback){
 
-                console.log("Mousedown", {stateUpdate:{containerState: JSON.stringify(this._containerState)}});
+            //    console.log("Mousedown", {stateUpdate:{containerState: JSON.stringify(this._containerState)}});
 
                 this._interfaceConnectionCallback = interfaceCallback;
 

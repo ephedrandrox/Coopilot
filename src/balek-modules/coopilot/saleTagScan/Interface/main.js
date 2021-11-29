@@ -74,6 +74,9 @@ define(['dojo/_base/declare',
                 this._interface.requestSaleTagScanEntries();
 
             },
+            startupContainable: function(){
+                console.log("startupContainable main scan containable");
+            },
             updateSaleTagScanData: function (saleTagScanData) {
                 if (saleTagScanData instanceof Array) {
                     this._saleTagScanData = saleTagScanData;

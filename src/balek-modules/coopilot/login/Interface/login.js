@@ -83,6 +83,8 @@ define(['dojo/_base/declare',
                                             }else
                                             {
                                                 topic.publish("requestModuleLoad", "coopilot/saleTagScan");
+                                                topic.publish("requestModuleLoad", "coopilot/menu");
+
                                                 this.destroy();
                                             }
                                         }));
