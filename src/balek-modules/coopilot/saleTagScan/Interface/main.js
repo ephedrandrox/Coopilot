@@ -69,8 +69,7 @@ define(['dojo/_base/declare',
             },
 
                 postCreate: function () {
-                    this.initializeContainable();
-
+                this.initializeContainable();
                 this._interface.requestSaleTagScanEntries();
 
             },
@@ -150,14 +149,6 @@ define(['dojo/_base/declare',
             _onRemoveClicked: function (eventObject) {
                 this._interface.removeEntries();
 
-            },
-            _onImportClicked: function(eventObject){
-                let tabImporter = new TabImporter({question: "Start File with...",
-                    importCompleteCallback: lang.hitch(this, function(importedData){
-                        console.log("Imported Data Success:", importedData);
-
-                        tabImporter.unload();
-                    }) });
             },
             copyToClipboard: function (textToCopy){
 

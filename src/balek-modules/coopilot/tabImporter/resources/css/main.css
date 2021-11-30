@@ -2,25 +2,18 @@
 
 
 .coopilotTabImporterInterface {
-    position: relative;
     color: #ffffff;
     background: rgba(20, 75, 115, 0.8);
-    display: inline-block;
-    text-align: left;
-    padding: 5px;
-    border: solid rgba(84, 227, 84, 1) 3px;
-    border-radius: 15px;
-    min-width: 200px;
-    max-width: 80%;
-    max-height:90%;
-    margin: 5px;
-    -webkit-box-shadow: 0px 0px 10px 0px rgba(84, 227, 84, 1);
-    -moz-box-shadow: 0px 0px 10px 0px rgba(84, 227, 84, 1);
-    box-shadow: 0px 0px 10px 0px rgba(84, 227, 84, 1);
-    outline: none;
-
-    overflow: scroll;
-    scroll-behavior: auto;
+    position: absolute;
+    background: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    visibility: visible;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
     display: flex;
 }
@@ -30,11 +23,11 @@
 .coopilotTabImporterInterfaceDropZone {
     color: #ffffff;
     background: rgba(20, 75, 115, 0.8);
-    border: solid black 3px;
+    border: none;
     text-align: left;
     text-wrap: none;
     white-space: pre;
-    padding: 5px;
+    padding: 0;
     font-family: monospace, monospace;
 
     max-width: 100%;
@@ -42,7 +35,7 @@
     overflow: auto;
     scroll-behavior: auto;
 
-    position: relative;
+    position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
@@ -64,20 +57,46 @@
 
     text-align: left;
     text-wrap: none;
-    white-space: pre;
+
     padding: 5px;
     font-family: monospace, monospace;
 
-    border: solid pink 2px;
+
     overflow: auto;
     scroll-behavior: auto;
 
     grid-area: content;
 }
+.coopilotTabImporterInterfacePreviewDropInfo{
+    align-content: center;
+    text-align: center;
+    display: inline-block;
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    top: 50%;
+    left: 50%;
 
+    transform: translate(-50%, -100%);
+
+
+}
+.coopilotTabImporterInterfacePreviewDivImportImage{
+    position: absolute;
+
+    text-align: center;
+    display: block;
+    padding: 0;
+    margin: 0;
+    width: 100px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+
+}
 .coopilotTabImporterInterfaceOutputDiv {
     color: #ffffff;
-    background: rgba(20, 75, 115, 0.8);
+    background: rgba(97, 91, 178, 0.8);
 
     text-align: left;
     text-wrap: normal;
@@ -85,7 +104,6 @@
     padding: 5px;
     font-family: monospace, monospace;
 
-    border: solid green 2px;
     overflow: auto;
     overflow-wrap: anywhere;
     scroll-behavior: auto;
@@ -96,7 +114,7 @@
 
 .coopilotTabImporterInterfaceOutputPreviewDiv {
     color: #ffffff;
-    background: rgba(20, 75, 115, 0.8);
+    background: none;
 
     text-align: left;
     text-wrap: normal;
@@ -104,7 +122,7 @@
     padding: 5px;
     font-family: monospace, monospace;
 
-    border: solid green 2px;
+
     overflow: auto;
     overflow-wrap: anywhere;
     scroll-behavior: auto;
@@ -115,29 +133,22 @@
 
 
 .coopilotTabImporterInterfaceTableRowIdentityCell {
-background: black;
+    background: rgba(0, 0, 0, 0.44);
     color: white;
 }
 
 .coopilotTabImporterInterfaceFileInfoDiv {
     position:relative;
     display: inline-block;
-    background: black;
+    background: rgba(0, 0, 0, 0.44);
     color: white;
-    border: solid purple 2px;
+
     grid-area: header;
 }
 .coopilotTabImporterInterfaceTableRow {
 
     background: black;
     color: white;
-    border: solid purple 2px;
     grid-area: header;
 }
 
-.coopilotTabImporterInterfaceTable tbody :nth-child(odd){
-
-    background: green;
-    color: black;
-
-}

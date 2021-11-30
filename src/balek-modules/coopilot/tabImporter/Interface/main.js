@@ -15,8 +15,11 @@ define(['dojo/_base/declare',
         "dijit/_WidgetBase",
         "dijit/_TemplatedMixin",
 
-        'dojo/text!balek-modules/coopilot/tabImporter/resources/html/Interface.html',
-        'dojo/text!balek-modules/coopilot/tabImporter/resources/css/Interface.css'
+        'balek-modules/components/syncedCommander/Interface',
+        'balek-client/session/workspace/container/containable',
+
+        'dojo/text!balek-modules/coopilot/tabImporter/resources/html/main.html',
+        'dojo/text!balek-modules/coopilot/tabImporter/resources/css/main.css'
     ],
     function (declare,
               lang,
@@ -34,12 +37,15 @@ define(['dojo/_base/declare',
               _WidgetBase,
               _TemplatedMixin,
 
+              _SyncedCommanderInterface,
+              _BalekWorkspaceContainerContainable,
+
               interfaceHTMLFile,
               interfaceCSSFile
 
               ) {
 
-        return declare("moduleDigivigilWWWSaleTagScanInterface", [_WidgetBase,_TemplatedMixin], {
+        return declare("moduleDigivigilWWWSaleTagScanInterface", [_WidgetBase,_TemplatedMixin,_SyncedCommanderInterface,_BalekWorkspaceContainerContainable], {
 
 
             baseClass: "coopilotTabImporterInterface",
@@ -69,14 +75,22 @@ define(['dojo/_base/declare',
                 declare.safeMixin(this, args);
                 domConstruct.place(domConstruct.toDom("<style>" + this.templateCssString + "</style>"), win.body());
 
+                this.setContainerName("📥 - Importer");
+
+
+
             },
 
             postCreate: function(){
-               topic.publish("displayAsDialog", this);
+
+                this.initializeContainable();
 
                 on(this._dropZone, ["dragenter, dragstart, dragend, dragleave, dragover, drag, drop"], function (e) {
                        e.preventDefault()
                     e.stopPropagation()});
+            },
+            startupContainable: function(){
+                console.log("startupContainable Tab Importer containable");
             },
             _onFocus: function(){
 

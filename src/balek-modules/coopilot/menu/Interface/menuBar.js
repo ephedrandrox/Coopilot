@@ -19,7 +19,6 @@ define(['dojo/_base/declare',
 
         //Coopilot ui components
         "balek-modules/coopilot/ui/input/getUserInput",
-        'balek-modules/coopilot/tabImporter/Interface',
 
         "balek-modules/coopilot/menu/Interface/menus/workspacesMenu/menuWidget",
         //Balek Interface Includes
@@ -46,7 +45,6 @@ define(['dojo/_base/declare',
               mainCss,
               //Coopilot ui components
               getUserInput,
-              TabImporter,
               workspaceMenu,
 
               //Balek Interface Includes
@@ -160,14 +158,16 @@ define(['dojo/_base/declare',
             _onInfoClicked: function(event){
               alert("No Info Yet")
             },
-
+            _onScansClicked: function(event){
+                alert("No Scans open yet, should already be open, don't close it")
+            },
             _onImportClicked: function(eventObject){
-                let tabImporter = new TabImporter({question: "Start File with...",
-                    importCompleteCallback: lang.hitch(this, function(importedData){
-                        console.log("Imported Data Success:", importedData);
 
-                        tabImporter.unload();
-                    }) });
+                topic.publish("newImporter", function(returnResult)
+                {
+                    console.log("newImporter", returnResult)
+                })
+
             },
             _onLoadModuleButtonClicked: function(clickEvent){
                 console.log("New Command clicked");
