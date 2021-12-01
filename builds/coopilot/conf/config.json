@@ -8,7 +8,7 @@
 	},
 	"Database Settings": {
 		"MySQL Database Connection": {
-			"host": "localhost",
+			"host": "mysqld-coopilot",
 			"user": "balekAppUser",
 			"password": "balekAppPassword",
 			"database": "balek"
